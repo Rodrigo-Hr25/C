@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Build script - compiles ANTLR4 grammars
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+MAIN_GRAMMAR_NAME="IML"
+MAIN_GRAMMAR_PATH="$SCRIPT_DIR"
+
+SECONDARY_GRAMMAR_NAME="IIML"
+SECONDARY_GRAMMAR_PATH="$SCRIPT_DIR/iiml"
+
+# Check if the antlr4 tools are installed
+COMMANDS_NEEDED=(antlr4 antlr4-build)
+for command in "${COMMANDS_NEEDED[@]}"; do
+    if ! command -v "$command" &> /dev/null; then
+        echo "Command $command not found. Please install the antlr4 tools."
+        exit 1
+    fi
+done
+
+# Build the main grammar
+cd "$MAIN_GRAMMAR_PATH"
+antlr4-build "$MAIN_GRAMMAR_NAME"
+
+# Build the secondary grammar
+cd "$SECONDARY_GRAMMAR_PATH"
+antlr4-build -python "$SECONDARY_GRAMMAR_NAME"

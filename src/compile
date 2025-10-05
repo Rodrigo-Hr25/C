@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Compile script - accepts file path and generates program
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+CURRENT_DIR=$(pwd)
+
+MAIN_GRAMMAR_NAME="IML"
+MAIN_GRAMMAR_PATH="$SCRIPT_DIR"
+SECONDARY_GRAMMAR_PATH="$SCRIPT_DIR/iiml"
+
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <file_path>"
+    exit 1
+fi
+
+FILE_TO_COMPILE="$1"
+OUTPUT_FILE="output.py"
+
+# Build the grammars
+"$SCRIPT_DIR/build"
+
+# Create a "final" directory
+rm -rf "$SCRIPT_DIR/../final"
+mkdir -p "$SCRIPT_DIR/../final"
+
+# Compile the main file
+cd "$MAIN_GRAMMAR_PATH"
+MAIN_NAME="$MAIN_GRAMMAR_NAME"Main
+java "$MAIN_NAME" "$CURRENT_DIR/$FILE_TO_COMPILE" "$SCRIPT_DIR/../final/$OUTPUT_FILE"
+
+# Copy the secondary grammar to the final directory
+cp "$SECONDARY_GRAMMAR_PATH"/*.py "$SCRIPT_DIR/../final"
+
+# Copy images folder to the final directory
+if [ -d "$SCRIPT_DIR/images" ]; then
+    cp -r "$SCRIPT_DIR/images" "$SCRIPT_DIR/../final"
+fi
+
+# Copy helper files to the final directory (if they exist)
+if [ -f "$SECONDARY_GRAMMAR_PATH/helpers.py" ]; then
+    cp "$SECONDARY_GRAMMAR_PATH/helpers.py" "$SCRIPT_DIR/../final"
+fi
+
+# Cleanup build files
+cd "$MAIN_GRAMMAR_PATH"
+antlr4-clean > /dev/null
+cd "$SECONDARY_GRAMMAR_PATH"
+antlr4-clean -python > /dev/null
+
+# Print the output file path
+echo "$SCRIPT_DIR/../final/$OUTPUT_FILE"

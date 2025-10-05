@@ -1,0 +1,104 @@
+imports() ::= <<
+import cv2
+import numpy as np
+from helpers import *
+from IIMLMain import main as iiml_main
+>>
+
+importModuleFromFile(moduleName, fileName, asName) ::= <<
+from <fileName> import <moduleName><if(asName)> as <asName><endif>
+>>
+
+main(statements) ::= <<
+<imports()>
+
+<statements>
+>>
+
+statements(statement) ::= <<
+<if (statement)><statement; separator="\n"><endif>
+>>
+
+element(elem) ::= <<
+<elem>
+>>
+
+binaryOperation(e1, e2, e3) ::= <<
+<e1> <e2> <e3>
+>>
+
+unaryOperation(op, e1) ::= <<
+<op> <e1>
+>>
+
+output(value) ::= <<
+print(<value>)
+>>
+
+read(prompt) ::= <<
+input(<prompt>)
+>>
+
+assignment(var, value) ::= <<
+<if(var)><var> = <value><else><value><endif>
+>>
+
+statement(code) ::= <<
+<code>
+>>
+
+ifOnly(condition, statement) ::= <<
+if <condition>:
+    <statements(statement)>
+>>
+
+ifElse(condition, ifStatement, elseStatement) ::= <<
+if <condition>:
+    <statements(ifStatement)>
+else:
+    <statements(elseStatement)>
+>>
+
+ifElseIf(condition, ifStatement, elseIfConditions, elseIfStatements, elseStatement) ::= <<
+if <condition>:
+    <statements(ifStatement)>
+<elseIfConditions, elseIfStatements:{cond, stmts | elif <cond>:
+    <statements(stmts)>
+}>
+<if(elseStatement)>else:
+    <statements(elseStatement)>
+<endif>
+>>
+
+until(cond, statement) ::= <<
+while <cond>:
+    <statement>
+>>
+
+forLoop(value, start, jump, maximum, body) ::= <<
+for <value> in range(<if (start)><start>,<endif><maximum><if (jump)>,<jump><endif>):
+    <body; separator="\n">
+>>
+
+forLoopList(value, list, body) ::= <<
+for <value> in <list>:
+    <body; separator="\n">
+>>
+
+loadImage(filename) ::= <<
+load_image_normalized(<filename>)
+>>
+
+runIIML(filename) ::= <<
+iiml_main(<filename>)
+>>
+
+// Template for morphological operations to reduce code duplication
+morphOperation(left, operator, right) ::= <<
+np.clip((<left>) <operator> (<right>), 0, 1)
+>>
+
+// Template for pixel comparisons to avoid duplication
+pixelComparison(image, operator, value, function) ::= <<
+<function>(<image> <operator> <value>)
+>>

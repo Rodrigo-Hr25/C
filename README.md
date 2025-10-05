@@ -124,17 +124,6 @@ Sample programs are available under the `examples/` directory.
 
 ---
 
-## 🚀 Future Improvements  
-
-- Extend IML with boolean expressions and complex conditions  
-- Add iterative constructs (`for`, `while`, `until`)  
-- Advanced morphological operations (`tophat`, `blackhat`)  
-- Extend support for RGB and other popular image formats  
-- Parallelization for performance improvements  
-- GUI interface for interactive IML program execution  
-
----
-
 ## 💼 Professional Context  
 
 This project was developed as part of my **compiler engineering and domain-specific languages portfolio**.  

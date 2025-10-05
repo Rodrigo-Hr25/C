@@ -1,7 +1,6 @@
 # IML / IIML Compiler & Interpreter  
 A domain-specific language (DSL) for grayscale image manipulation and morphological operations  
 
-**Academic Year:** 2024/2025  
 **Category:** Compiler 
 
 ---
